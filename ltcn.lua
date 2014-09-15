@@ -6,6 +6,7 @@ local Cf, Cg, Cmt, Cp, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Cp, lpeg.Ct
 local alpha, digit, alnum = class.alpha, class.digit, class.alnum
 local xdigit = class.xdigit
 local space = class.space
+local format = string.format
 
 function lineno(s, i)
     if i == 1 then return 1, 1 end
@@ -17,13 +18,6 @@ function lineno(s, i)
     end
     local c = lastline:len() - 1
     return l, c ~= 0 and c or 1
-end
-
--- Creates an error message for the input string
-local function syntaxerror(errorinfo, pos, msg)
-    local l, c = lineno(errorinfo.subject, pos)
-    local error_msg = "%s:%d:%d: syntax error, %s"
-    return string.format(error_msg, errorinfo.filename, l, c, msg)
 end
 
 local function getffp(s, i, t)
@@ -40,11 +34,11 @@ end
 
 -- Creates an errror message using the farthest failure position
 local function report_error()
-    return geterrorinfo() / function(t)
-        local p = t.ffp or 1
-        local msg = "unexpected '%s', expecting %s"
-        msg = string.format(msg, t.unexpected, t.expected)
-        return nil, syntaxerror(t, p, msg)
+    return geterrorinfo() / function(e)
+        local pos = e.ffp or 1
+        local line, col = lineno(e.subject, pos)
+        local s = "%s:%d:%d: syntax error, unexpected '%s', expecting %s"
+        return nil, format(s, e.filename, line, col, e.unexpected, e.expected)
     end
 end
 
