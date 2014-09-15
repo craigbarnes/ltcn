@@ -9,5 +9,11 @@ local input = [=[
 }
 ]=]
 
-local t = assert(ltcn.parse(input))
-print(serpent.block(t))
+local t, err = ltcn.parse(input, "")
+
+if not t then
+    io.stderr:write(err, "\n")
+    os.exit(1)
+else
+    print(serpent.block(t))
+end
