@@ -2,10 +2,9 @@ local lpeg = require "lpeg"
 local class = lpeg.locale()
 local P, S, V = lpeg.P, lpeg.S, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
-local Cf, Cg, Cmt, Cp, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Cp, lpeg.Ct
+local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
 local alpha, digit, alnum = class.alpha, class.digit, class.alnum
-local xdigit = class.xdigit
-local space = class.space
+local xdigit, space = class.xdigit, class.space
 local format = string.format
 
 local boolmap = {
@@ -95,7 +94,7 @@ local function kw(str)
 end
 
 local function unescape(s)
-    return (string.gsub(s, "\\[abfnrtv'\n\r\"\\]", charmap))
+    return (s:gsub("\\[abfnrtv'\n\r\"\\]", charmap))
 end
 
 local function setfield(t, v1, v2)
