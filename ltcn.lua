@@ -89,6 +89,11 @@ local replacements = {
     ["\\\\"] = "\\"
 }
 
+local boolmap = {
+    ["true"] = true,
+    ["false"] = false
+}
+
 local function unescape(s)
     return (string.gsub(s, "\\[abfnrtv'\n\r\"\\]", replacements))
 end
@@ -112,8 +117,7 @@ local grammar = {
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
     Table = symb("{") * Cf(Ct"" * V"FieldList", setfield) * symb("}");
     Expr = token(V"Number", "Number") + token(V"String", "String") + V"Table" +
-           kw("false") / function() return false end +
-           kw("true") / function() return true end;
+           ((kw("false") + kw("true")) / boolmap);
     -- Lexer
     Space = space^1;
     Equals = P"="^0;
