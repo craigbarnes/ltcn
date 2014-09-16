@@ -8,6 +8,26 @@ local xdigit = class.xdigit
 local space = class.space
 local format = string.format
 
+local boolmap = {
+    ["true"] = true,
+    ["false"] = false
+}
+
+local charmap = {
+    ["\\a"] = "\a",
+    ["\\b"] = "\b",
+    ["\\f"] = "\f",
+    ["\\n"] = "\n",
+    ["\\r"] = "\r",
+    ["\\t"] = "\t",
+    ["\\v"] = "\v",
+    ["\\\n"] = "\n",
+    ["\\\r"] = "\n",
+    ["\\'"] = "'",
+    ['\\"'] = '"',
+    ["\\\\"] = "\\"
+}
+
 function lineno(s, i)
     if i == 1 then return 1, 1 end
     local l, lastline = 0, ""
@@ -74,28 +94,8 @@ local function kw(str)
     return token(P(str) * -V"NameChar", str)
 end
 
-local replacements = {
-    ["\\a"] = "\a",
-    ["\\b"] = "\b",
-    ["\\f"] = "\f",
-    ["\\n"] = "\n",
-    ["\\r"] = "\r",
-    ["\\t"] = "\t",
-    ["\\v"] = "\v",
-    ["\\\n"] = "\n",
-    ["\\\r"] = "\n",
-    ["\\'"] = "'",
-    ['\\"'] = '"',
-    ["\\\\"] = "\\"
-}
-
-local boolmap = {
-    ["true"] = true,
-    ["false"] = false
-}
-
 local function unescape(s)
-    return (string.gsub(s, "\\[abfnrtv'\n\r\"\\]", replacements))
+    return (string.gsub(s, "\\[abfnrtv'\n\r\"\\]", charmap))
 end
 
 local function setfield(t, v1, v2)
