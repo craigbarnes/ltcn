@@ -85,6 +85,10 @@ local function token(pat, name)
     return pat * V"Skip" + updateffp(name) * P(false)
 end
 
+local function T(name)
+    return token(V(name), name)
+end
+
 local function symb(str)
     return token(P(str), str)
 end
@@ -110,13 +114,12 @@ local grammar = {
     V"Skip" * V"Table" * V"Skip" * -1 + report_error();
     -- Parser
     IndexedField = Cg(symb("[") * V"Expr" * symb("]") * symb("=") * V"Expr");
-    NamedField = Cg(token(V"Name", "Name") * V"Skip" * symb("=") * V"Expr");
+    NamedField = Cg(T"Name" * V"Skip" * symb("=") * V"Expr");
     Field = V"IndexedField" + V"NamedField" + V"Expr";
     FieldSep = symb(",") + symb(";");
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
     Table = symb("{") * Cf(Ct"" * V"FieldList", setfield) * symb("}");
-    Expr = token(V"Number", "Number") + token(V"String", "String") + V"Table" +
-           ((kw("false") + kw("true")) / boolmap);
+    Expr = T"Number" + T"String" + V"Table" + V"Boolean";
     -- Lexer
     Space = space^1;
     Equals = P"="^0;
@@ -140,6 +143,7 @@ local grammar = {
             (digit^1 * V"Expo");
     Int = digit^1;
     Number = C(P"-"^-1 * (V"Hex" + V"Float" + V"Int")) / tonumber;
+    Boolean = (kw"true" + kw"false") / boolmap;
     SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - P"'"))^0) * P"'";
     DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - P'"'))^0) * P'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
