@@ -1,10 +1,9 @@
 local lpeg = require "lpeg"
 local class = lpeg.locale()
-local P, S, V = lpeg.P, lpeg.S, lpeg.V
+local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
-local alpha, digit, alnum = class.alpha, class.digit, class.alnum
-local xdigit, space = class.xdigit, class.space
+local digit, xdigit, space = class.digit, class.xdigit, class.space
 local format = string.format
 
 local boolmap = {
@@ -125,8 +124,8 @@ local grammar = {
     LongString = V"Open" * C((P(1) - V"CloseEQ")^0) * V"Close" / 1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
-    NameStart = alpha + P"_";
-    NameChar = alnum + P"_";
+    NameStart = R"az" + R"AZ" + P"_";
+    NameChar = V"NameStart" + R"09";
     Keywords = P"and" + "break" + "do" + "elseif" + "else" + "end" +
                "false" + "for" + "function" + "goto" + "if" + "in" +
                "local" + "nil" + "not" + "or" + "repeat" + "return" +
