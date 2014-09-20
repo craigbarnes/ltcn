@@ -12,3 +12,4 @@ clean:
 
 
 .PHONY: check clean
+.DELETE_ON_ERROR:
