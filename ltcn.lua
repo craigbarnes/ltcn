@@ -113,19 +113,19 @@ end
 local grammar = {
     V"Skip" * V"Table" * V"Skip" * -1 + report_error();
     -- Parser
-    IndexedField = Cg(symb("[") * V"Expr" * symb("]") * symb("=") * V"Expr");
-    NamedField = Cg(T"Name" * V"Skip" * symb("=") * V"Expr");
+    IndexedField = Cg(symb"[" * V"Expr" * symb"]" * symb"=" * V"Expr");
+    NamedField = Cg(T"Name" * V"Skip" * symb"=" * V"Expr");
     Field = V"IndexedField" + V"NamedField" + V"Expr";
-    FieldSep = symb(",") + symb(";");
+    FieldSep = symb"," + symb";";
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
-    Table = symb("{") * Cf(Ct"" * V"FieldList", setfield) * symb("}");
+    Table = symb"{" * Cf(Ct"" * V"FieldList", setfield) * symb"}";
     Expr = T"Number" + T"String" + V"Table" + V"Boolean";
     -- Lexer
     Space = space^1;
     Equals = P"="^0;
     Open = "[" * Cg(V"Equals", "init") * "[" * P"\n"^-1;
     Close = "]" * C(V"Equals") * "]";
-    CloseEQ = Cmt(V"Close" * Cb("init"), function(s, i, a, b) return a == b end);
+    CloseEQ = Cmt(V"Close" * Cb"init", function(s, i, a, b) return a == b end);
     LongString = V"Open" * C((P(1) - V"CloseEQ")^0) * V"Close" / 1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
@@ -155,7 +155,7 @@ local grammar = {
 local function parse(subject, filename)
     local errorinfo = {subject = subject, filename = filename}
     lpeg.setmaxstack(1000)
-    return lpeg.match(grammar, subject, nil, errorinfo)
+    return lpeg.match(grammar, subject, 1, errorinfo)
 end
 
 return {
