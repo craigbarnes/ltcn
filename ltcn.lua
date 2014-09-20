@@ -133,7 +133,7 @@ local grammar = {
                "then" + "true" + "until" + "while";
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
-    Hex = (P"0x" + P"0X") * xdigit^1;
+    Hex = P"0" * S"xX" * xdigit^1;
     Expo = S"eE" * S"+-"^-1 * digit^1;
     Float = (((digit^1 * P"." * digit^0) + (P"." * digit^1)) * V"Expo"^-1) +
             (digit^1 * V"Expo");
@@ -154,6 +154,29 @@ local function parse(subject, filename)
     return lpeg.match(grammar, subject, 1, errorinfo)
 end
 
+local function parse_file(file_or_filename)
+    local file, filename, openerr
+    if type(file_or_filename) == "string" then
+        filename = file_or_filename
+        file, openerr = io.open(filename)
+        if not file then
+            return nil, openerr
+        end
+    elseif io.type(file_or_filename) == "file" then
+        file = file_or_filename
+    else
+        return nil, "Invalid argument #1: not a file handle or filename string"
+    end
+    local text, readerr = file:read("*a")
+    file:close()
+    if text then
+        return parse(text, filename)
+    else
+        return nil, readerr
+    end
+end
+
 return {
-    parse = parse
+    parse = parse,
+    parse_file = parse_file
 }
