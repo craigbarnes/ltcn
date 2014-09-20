@@ -1,0 +1,6 @@
+{
+    1, -2, 3, -0xff, -0, true, false, 'hi', "hello",
+    {'a','b','c'}, field1 = 55, ["field2"] = 44.0e-3, --[false] = false,
+    ["\a\b\n\\'\""] = '"\n\t\r\\\r\n',
+    [0xff] = 0Xff, locals = 0x55, falsey = .5
+}
