@@ -1,0 +1,25 @@
+package = "ltcn"
+version = "%VERSION%-1"
+
+description = {
+    summary = "Lua Table Constructor Notation",
+    homepage = "https://github.com/craigbarnes/ltcn",
+    license = "ISC"
+}
+
+source = {
+    url = "git://github.com/craigbarnes/ltcn.git",
+    tag = "%VERSION%"
+}
+
+dependencies = {
+    "lua >= 5.1",
+    "lpeg >= 0.10"
+}
+
+build = {
+    type = "builtin",
+    modules = {
+        ltcn = "ltcn.lua"
+    }
+}
