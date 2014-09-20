@@ -1,3 +1,7 @@
+check: test/compare.lua test/t1.ltcn
+	@lua test/compare.lua test/t1.ltcn
+	@echo OK
+
 ltcn-%-1.rockspec: rockspec.in | .git/refs/tags/%
 	@sed 's/%VERSION%/$*/' $< > $@
 	@LUA_PATH=';;' luarocks lint $@
@@ -7,4 +11,4 @@ clean:
 	$(RM) ltcn-*.rockspec
 
 
-.PHONY: clean
+.PHONY: check clean
