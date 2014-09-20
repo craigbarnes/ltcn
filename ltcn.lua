@@ -56,7 +56,7 @@ local function report_error()
     return geterrorinfo() / function(e)
         local pos = e.ffp or 1
         local line, col = lineno(e.subject, pos)
-        local s = "%s:%d:%d: syntax error, unexpected '%s', expecting %s"
+        local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
         return nil, format(s, e.filename, line, col, e.unexpected, e.expected)
     end
 end
@@ -93,10 +93,6 @@ local function symb(str)
     return token(P(str), str)
 end
 
-local function kw(str)
-    return token(P(str) * -V"NameChar", str)
-end
-
 local function unescape(s)
     return (s:gsub("\\[abfnrtv'\n\r\"\\]", charmap))
 end
@@ -119,7 +115,7 @@ local grammar = {
     FieldSep = symb"," + symb";";
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
     Table = symb"{" * Cf(Ct"" * V"FieldList", setfield) * symb"}";
-    Expr = T"Number" + T"String" + V"Table" + V"Boolean";
+    Expr = T"Number" + T"String" + T"Boolean" + V"Table";
     -- Lexer
     Space = space^1;
     Equals = P"="^0;
@@ -143,7 +139,7 @@ local grammar = {
             (digit^1 * V"Expo");
     Int = digit^1;
     Number = C(P"-"^-1 * (V"Hex" + V"Float" + V"Int")) / tonumber;
-    Boolean = (kw"true" + kw"false") / boolmap;
+    Boolean = ((P"true" + P"false") * -V"NameChar") / boolmap;
     SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - P"'"))^0) * P"'";
     DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - P'"'))^0) * P'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
