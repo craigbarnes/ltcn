@@ -1,9 +1,8 @@
 local lpeg = require "lpeg"
-local class = lpeg.locale()
 local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
-local digit, xdigit, space = class.digit, class.xdigit, class.space
+local digit = R"09"
 local format = string.format
 
 local charmap = {
@@ -115,7 +114,7 @@ local grammar = {
     Table = symb"{" * Cf(Ct"" * V"FieldList", setfield) * symb"}";
     Expr = T"Number" + T"String" + T"Boolean" + V"Table";
     -- Lexer
-    Space = space^1;
+    Space = S" \f\n\r\t\v"^1;
     LongOpen = "[" * Cg(P"="^0, "openeq") * "[" * P"\n"^-1;
     LongClose = "]" * C(P"="^0) * "]";
     LongMatch = Cmt(V"LongClose" * Cb"openeq", delim_match);
@@ -130,7 +129,7 @@ local grammar = {
                "then" + "true" + "until" + "while";
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
-    Hex = P"0" * S"xX" * xdigit^1;
+    Hex = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
     Expo = S"eE" * S"+-"^-1 * digit^1;
     Float = (((digit^1 * P"." * digit^0) + (P"." * digit^1)) * V"Expo"^-1) +
             (digit^1 * V"Expo");
