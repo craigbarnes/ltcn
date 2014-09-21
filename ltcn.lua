@@ -6,11 +6,6 @@ local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
 local digit, xdigit, space = class.digit, class.xdigit, class.space
 local format = string.format
 
-local boolmap = {
-    ["true"] = true,
-    ["false"] = false
-}
-
 local charmap = {
     ["\\a"] = "\a",
     ["\\b"] = "\b",
@@ -141,7 +136,9 @@ local grammar = {
             (digit^1 * V"Expo");
     Int = digit^1;
     Number = C(P"-"^-1 * (V"Hex" + V"Float" + V"Int")) / tonumber;
-    Boolean = ((P"true" + P"false") * -V"NameChar") / boolmap;
+    True = P"true" * -V"NameChar" * Cc(true);
+    False = P"false" * -V"NameChar" * Cc(false);
+    Boolean = V"True" + V"False";
     SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - P"'"))^0) * P"'";
     DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - P'"'))^0) * P'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
