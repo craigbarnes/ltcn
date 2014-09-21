@@ -105,6 +105,10 @@ local function setfield(t, v1, v2)
     return t
 end
 
+local function delim_match(subject, offset, c1, c2)
+    return c1 == c2
+end
+
 local grammar = {
     V"Skip" * V"Table" * V"Skip" * -1 + report_error();
     -- Parser
@@ -117,11 +121,10 @@ local grammar = {
     Expr = T"Number" + T"String" + T"Boolean" + V"Table";
     -- Lexer
     Space = space^1;
-    Equals = P"="^0;
-    Open = "[" * Cg(V"Equals", "init") * "[" * P"\n"^-1;
-    Close = "]" * C(V"Equals") * "]";
-    CloseEQ = Cmt(V"Close" * Cb"init", function(s, i, a, b) return a == b end);
-    LongString = V"Open" * C((P(1) - V"CloseEQ")^0) * V"Close" / 1;
+    LongOpen = "[" * Cg(P"="^0, "openeq") * "[" * P"\n"^-1;
+    LongClose = "]" * C(P"="^0) * "]";
+    LongMatch = Cmt(V"LongClose" * Cb"openeq", delim_match);
+    LongString = V"LongOpen" * C((P(1) - V"LongMatch")^0) * V"LongClose" / 1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
     NameStart = R"az" + R"AZ" + P"_";
