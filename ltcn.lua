@@ -20,16 +20,10 @@ local charmap = {
     ["\\\\"] = "\\"
 }
 
-function lineno(s, i)
-    if i == 1 then return 1, 1 end
-    local l, lastline = 0, ""
-    s = s:sub(1, i) .. "\n"
-    for line in s:gmatch("[^\n]*[\n]") do
-        l = l + 1
-        lastline = line
-    end
-    local c = lastline:len() - 1
-    return l, c ~= 0 and c or 1
+local function lineno(str, i)
+  if i == 1 then return 1, 1 end
+  local rest, n = str:sub(1, i):gsub("[^\n]*\n", "")
+  return n + 1, #rest
 end
 
 local function getffp(s, i, t)
@@ -47,8 +41,7 @@ end
 -- Creates an errror message using the farthest failure position
 local function report_error()
     return geterrorinfo() / function(e)
-        local pos = e.ffp or 1
-        local line, col = lineno(e.subject, pos)
+        local line, col = lineno(e.subject, e.ffp or 1)
         local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
         return nil, format(s, e.filename, line, col, e.unexpected, e.expected)
     end
