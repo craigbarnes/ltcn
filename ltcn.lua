@@ -30,7 +30,6 @@ local function getffp(s, i, t)
     return t.ffp or i, t
 end
 
--- Gets the table that contains the error information
 local function geterrorinfo()
     return Cmt(Carg(1), getffp) * (C(V"OneWord") + Cc("EOF")) / function(t, u)
         t.unexpected = u
@@ -38,7 +37,6 @@ local function geterrorinfo()
     end
 end
 
--- Creates an errror message using the farthest failure position
 local function report_error()
     return geterrorinfo() / function(e)
         local line, col = lineno(e.subject, e.ffp or 1)
@@ -98,7 +96,7 @@ end
 
 local grammar = {
     V"Skip" * V"Table" * V"Skip" * -1 + report_error();
-    -- Parser
+
     IndexedField = Cg(symb"[" * V"Expr" * symb"]" * symb"=" * V"Expr");
     NamedField = Cg(T"Name" * V"Skip" * symb"=" * V"Expr");
     Field = V"IndexedField" + V"NamedField" + V"Expr";
@@ -106,14 +104,16 @@ local grammar = {
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
     Table = symb"{" * Cf(Ct"" * V"FieldList", setfield) * symb"}";
     Expr = T"Number" + T"String" + T"Boolean" + V"Table";
-    -- Lexer
-    Space = S" \f\n\r\t\v"^1;
+
     LongOpen = "[" * Cg(P"="^0, "openeq") * "[" * P"\n"^-1;
     LongClose = "]" * C(P"="^0) * "]";
     LongMatch = Cmt(V"LongClose" * Cb"openeq", delim_match);
     LongString = V"LongOpen" * C((P(1) - V"LongMatch")^0) * V"LongClose" / 1;
+
+    Space = S" \f\n\r\t\v"^1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
+
     NameStart = R"az" + R"AZ" + P"_";
     NameChar = V"NameStart" + R"09";
     Keywords = P"and" + "break" + "do" + "elseif" + "else" + "end" +
@@ -122,20 +122,23 @@ local grammar = {
                "then" + "true" + "until" + "while";
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
+
     Hex = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
     Expo = S"eE" * S"+-"^-1 * digit^1;
     Float = (((digit^1 * P"." * digit^0) + (P"." * digit^1)) * V"Expo"^-1) +
             (digit^1 * V"Expo");
     Int = digit^1;
     Number = C(P"-"^-1 * (V"Hex" + V"Float" + V"Int")) / tonumber;
+
     True = P"true" * -V"NameChar" * Cc(true);
     False = P"false" * -V"NameChar" * Cc(false);
     Boolean = V"True" + V"False";
+
     SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - P"'"))^0) * P"'";
     DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - P'"'))^0) * P'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
     String = V"LongString" + (V"ShortString" / unescape);
-    -- For error reporting
+
     OneWord = V"Name" + V"Number" + V"String" + V"Reserved" + P(1);
 }
 
