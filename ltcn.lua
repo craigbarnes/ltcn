@@ -96,7 +96,7 @@ local function delim_match(subject, offset, c1, c2)
 end
 
 local grammar = {
-    V"Skip" * V"Table" * T"EOF" + report_error();
+    V"Return" * V"Table" * T"EOF" + report_error();
 
     Key = T"Number" + T"String" + T"Boolean";
     Value = T"Number" + T"String" + T"Boolean" + V"Table";
@@ -115,6 +115,7 @@ local grammar = {
     Space = S" \f\n\r\t\v"^1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
+    Return = V"Skip" * (P"return" * -V"NameChar")^-1 * V"Skip";
     EOF = P(-1);
 
     NameStart = R"az" + R"AZ" + P"_";
