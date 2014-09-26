@@ -98,13 +98,14 @@ end
 local grammar = {
     V"Skip" * V"Table" * T"EOF" + report_error();
 
-    IndexedField = Cg(symb"[" * V"Expr" * symb"]" * symb"=" * V"Expr");
-    NamedField = Cg(T"Name" * V"Skip" * symb"=" * V"Expr");
-    Field = V"IndexedField" + V"NamedField" + V"Expr";
+    Key = T"Number" + T"String" + T"Boolean";
+    Value = T"Number" + T"String" + T"Boolean" + V"Table";
+    IndexedField = Cg(symb"[" * V"Key" * symb"]" * symb"=" * V"Value");
+    NamedField = Cg(T"Name" * symb"=" * V"Value");
+    Field = V"IndexedField" + V"NamedField" + V"Value";
     FieldSep = symb"," + symb";";
     FieldList = (V"Field" * (V"FieldSep" * V"Field")^0 * V"FieldSep"^-1)^-1;
     Table = symb"{" * Cf(Ct"" * V"FieldList", setfield) * symb"}";
-    Expr = T"Number" + T"String" + T"Boolean" + V"Table";
 
     LongOpen = "[" * Cg(P"="^0, "openeq") * "[" * P"\n"^-1;
     LongClose = "]" * C(P"="^0) * "]";

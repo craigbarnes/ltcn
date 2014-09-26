@@ -12,3 +12,9 @@ do
     assert(t == nil)
     assert(e == ":7:3: Syntax error: unexpected 'oops', expecting '{'")
 end
+
+do
+    local t, e = parse "{ [{'x', 'y', 'z'}] = 'xyz' }"
+    assert(t == nil)
+    assert(e == ":1:4: Syntax error: unexpected '{', expecting 'Boolean', 'String', 'Number'")
+end
