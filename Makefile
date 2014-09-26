@@ -1,5 +1,9 @@
-check: test/compare.lua test/t1.ltcn
-	@lua test/compare.lua test/t1.ltcn
+LUA ?= lua
+RM  ?= rm -f
+
+check: test/compare.lua test/t1.ltcn test/errors.lua
+	@$(LUA) test/compare.lua test/t1.ltcn
+	@$(LUA) test/errors.lua
 	@echo OK
 
 ltcn-%-1.rockspec: rockspec.in | .git/refs/tags/%

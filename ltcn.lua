@@ -39,9 +39,10 @@ end
 
 local function report_error()
     return geterrorinfo() / function(e)
+        local filename = e.filename or ""
         local line, col = lineno(e.subject, e.ffp or 1)
         local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
-        return nil, format(s, e.filename, line, col, e.unexpected, e.expected)
+        return nil, format(s, filename, line, col, e.unexpected, e.expected)
     end
 end
 
@@ -95,7 +96,7 @@ local function delim_match(subject, offset, c1, c2)
 end
 
 local grammar = {
-    V"Skip" * V"Table" * V"Skip" * -1 + report_error();
+    V"Skip" * V"Table" * T"EOF" + report_error();
 
     IndexedField = Cg(symb"[" * V"Expr" * symb"]" * symb"=" * V"Expr");
     NamedField = Cg(T"Name" * V"Skip" * symb"=" * V"Expr");
@@ -113,6 +114,7 @@ local grammar = {
     Space = S" \f\n\r\t\v"^1;
     Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
+    EOF = P(-1);
 
     NameStart = R"az" + R"AZ" + P"_";
     NameChar = V"NameStart" + R"09";
