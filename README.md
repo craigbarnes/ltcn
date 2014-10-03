@@ -31,8 +31,8 @@ Non-goals:
 Requirements
 ------------
 
-* [Lua] 5.1/5.2 or [LuaJIT] 2
-* [LPeg]
+* [Lua] 5.1+ or [LuaJIT] 2
+* [LPeg] 0.12+
 
 [License]
 ---------
