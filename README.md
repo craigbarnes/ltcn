@@ -7,19 +7,19 @@ unquoted keys.
 
 Goals and features:
 
-* Support parsing any valid Lua table constructor that consists of only
-  string, number or boolean keys and string, number, boolean or table values.
-* Allow comments and whitespace in the same inter-token positions as Lua does.
+* Support parsing any valid Lua table constructor that consists of string,
+  number or boolean *keys* and string, number, boolean or table *values*.
+* Allow comments and whitespace in the same positions as Lua does.
 * In the absence of errors, produce the same table structure as Lua's [`load`]
   function (in text mode), given the same input.
-* Ignore a single `return` keyword before the opening, outermost brace, as a
+* Ignore a single `return` keyword before the outermost opening brace, as a
   convenience for the above.
 * Provide the same security advantages as `JSON.parse` does, as compared to
-  `eval`, for parsing input originating from untrusted sources or networks.
+  `eval`, for parsing input from untrusted sources or networks.
 
 Non-goals:
 
-* Support for tables as keys. This was supported at one point, but every
+* Allowing tables as keys. This was supported at one point, but every
   use case I could think of would have required additional features
   (that clash with other goals) in order to be useful.
 * Support for structures that require more than a single table
@@ -34,8 +34,8 @@ Non-goals:
 Requirements
 ------------
 
-* [Lua] 5.1+ or [LuaJIT] 2
-* [LPeg] 0.12+
+* [Lua] >= 5.1 or [LuaJIT] >= 2.0
+* [LPeg] >= 0.12
 
 [License]
 ---------
