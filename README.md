@@ -14,7 +14,7 @@ Goals and features:
   function (in text mode), given the same input.
 * Ignore a single `return` keyword before the opening, outermost brace, as a
   convenience for the above.
-* Provide the same security advantages as `JSON.parse` does compared to
+* Provide the same security advantages as `JSON.parse` does, as compared to
   `eval`, for parsing input originating from untrusted sources or networks.
 
 Non-goals:
