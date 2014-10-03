@@ -9,8 +9,9 @@ Goals and features:
 
 * Support parsing any valid Lua table constructor that consists of only
   string, number or boolean keys and string, number, boolean or table values.
-* In the absence of errors, produce the same table structure as Lua's `load`
-  function (in text mode).
+* Allow comments and whitespace in the same inter-token positions as Lua does.
+* In the absence of errors, produce the same table structure as Lua's [`load`]
+  function (in text mode), given the same input.
 * Ignore a single `return` keyword before the opening, outermost brace, as a
   convenience for the above.
 * Provide the same security advantages as `JSON.parse` does compared to
@@ -23,10 +24,12 @@ Non-goals:
   (that clash with other goals) in order to be useful.
 * Support for structures that require more than a single table
   constructor to initialize. [Serpent] is a better choice for this use case.
-* Support for expression evaluation. Constant expressions can always be
-  normalized to simple values. For non-constant expressions, Lua's
-  `load` function is a better choice (although obviously not for
-  untrusted input!).
+* Expression evaluation. Constant expressions can be normalized to simple
+  values. Non-constant expressions are out of scope.
+* Support for metatables, functions, conditionals etc. This format is known
+  as "Lua" and is already handled well by the [`load`] function
+  (although this obviously requires much greater caution if handling
+  untrusted input).
 
 Requirements
 ------------
@@ -52,6 +55,8 @@ OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
+[`load`]: http://www.lua.org/manual/5.2/manual.html#pdf-load
+[Serpent]: https://github.com/pkulchenko/serpent
 [License]: http://en.wikipedia.org/wiki/ISC_license "ISC License"
 [Lua]: http://www.lua.org/
 [LuaJIT]: http://luajit.org/
