@@ -112,18 +112,22 @@ local grammar = {
     LongMatch = Cmt(V"LongClose" * Cb"openeq", delim_match);
     LongString = V"LongOpen" * C((P(1) - V"LongMatch")^0) * V"LongClose" / 1;
 
+    LongComment = P"--" * V"LongString" / 0;
+    LineComment = P"--" * (P(1) - P"\n")^0;
+    Comment = V"LongComment" + V"LineComment";
+
     Space = S" \f\n\r\t\v"^1;
-    Comment = P"--" * V"LongString" / 0 + P"--" * (P(1) - P"\n")^0;
     Skip = (V"Space" + V"Comment")^0;
     Return = V"Skip" * (P"return" * -V"NameChar")^-1 * V"Skip";
     EOF = P(-1);
 
-    NameStart = R"az" + R"AZ" + P"_";
-    NameChar = V"NameStart" + R"09";
     Keywords = P"and" + "break" + "do" + "elseif" + "else" + "end" +
                "false" + "for" + "function" + "goto" + "if" + "in" +
                "local" + "nil" + "not" + "or" + "repeat" + "return" +
                "then" + "true" + "until" + "while";
+
+    NameStart = R"az" + R"AZ" + P"_";
+    NameChar = V"NameStart" + R"09";
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
 
