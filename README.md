@@ -22,10 +22,10 @@ Non-goals:
 * Allowing tables as keys. This was supported at one point, but every
   use case I could think of would have required additional features
   (that clash with other goals) in order to be useful.
-* Support for structures that require more than a single table
-  constructor to initialize. [Serpent] is a better choice for this use case.
+* Support for structures that require more than simple table constructors
+  to initialize (e.g. those with self references, shared references etc.).
 * Expression evaluation. Constant expressions can be normalized to simple
-  values. Non-constant expressions are out of scope.
+  values. Non-constant expressions are beyond the scope of LTCN.
 * Support for metatables, functions, conditionals etc. This format is known
   as "Lua" and is already handled well by the [`load`] function
   (although this obviously requires much greater caution if handling
@@ -56,7 +56,6 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
 [`load`]: http://www.lua.org/manual/5.2/manual.html#pdf-load
-[Serpent]: https://github.com/pkulchenko/serpent
 [License]: http://en.wikipedia.org/wiki/ISC_license "ISC License"
 [Lua]: http://www.lua.org/
 [LuaJIT]: http://luajit.org/
