@@ -2,8 +2,10 @@ local lpeg = require "lpeg"
 local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
+local tonumber, rawset, tinsert = tonumber, rawset, table.insert
+local type, iotype, open = type, io.type, io.open
+local _ENV = nil
 local digit = R"09"
-local format = string.format
 
 local charmap = {
     ["\\a"] = "\a",
@@ -42,7 +44,7 @@ local function report_error()
         local filename = e.filename or ""
         local line, col = lineno(e.subject, e.ffp or 1)
         local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
-        return nil, format(s, filename, line, col, e.unexpected, e.expected)
+        return nil, s:format(filename, line, col, e.unexpected, e.expected)
     end
 end
 
@@ -84,7 +86,7 @@ end
 
 local function setfield(t, v1, v2)
     if v2 == nil then
-        table.insert(t, v1)
+        tinsert(t, v1)
     else
         rawset(t, v1, v2)
     end
@@ -160,22 +162,21 @@ local function parse_file(file_or_filename)
     local file, filename, openerr
     if type(file_or_filename) == "string" then
         filename = file_or_filename
-        file, openerr = io.open(filename)
+        file, openerr = open(filename)
         if not file then
             return nil, openerr
         end
-    elseif io.type(file_or_filename) == "file" then
+    elseif iotype(file_or_filename) == "file" then
         file = file_or_filename
     else
         return nil, "Invalid argument #1: not a file handle or filename string"
     end
     local text, readerr = file:read("*a")
     file:close()
-    if text then
-        return parse(text, filename)
-    else
+    if not text then
         return nil, readerr
     end
+    return parse(text, filename)
 end
 
 return {
