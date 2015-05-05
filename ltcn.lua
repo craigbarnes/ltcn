@@ -23,9 +23,11 @@ local charmap = {
 }
 
 local function lineno(str, i)
-  if i == 1 then return 1, 1 end
-  local rest, n = str:sub(1, i):gsub("[^\n]*\n", "")
-  return n + 1, #rest
+    if i == 1 then
+        return 1, 1
+    end
+    local rest, n = str:sub(1, i):gsub("[^\n]*\n", "")
+    return n + 1, #rest
 end
 
 local function getffp(s, i, t)
