@@ -2,8 +2,7 @@ local lpeg = require "lpeg"
 local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
-local tonumber, rawset, tinsert = tonumber, rawset, table.insert
-local type, iotype, open = type, io.type, io.open
+local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local _ENV = nil
 local digit = R"09"
 
@@ -88,9 +87,9 @@ end
 
 local function setfield(t, v1, v2)
     if v2 == nil then
-        tinsert(t, v1)
+        t[#t + 1] = v1
     else
-        rawset(t, v1, v2)
+        t[v1] = v2
     end
     return t
 end
