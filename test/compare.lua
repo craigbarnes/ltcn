@@ -1,9 +1,9 @@
 local ltcn = require "ltcn"
+local type, pairs, load, assert = type, pairs, load, assert
+local open, stderr, exit = io.open, io.stderr, os.exit
 local verbose = os.getenv "VERBOSE"
-
-local function printf(...)
-    io.stderr:write(string.format(...))
-end
+local filename = assert(arg[1], "arg[1] is nil; expected filename")
+local _ENV = nil
 
 local function compare(t1, t2)
     for k, v1 in pairs(t1) do
@@ -12,17 +12,17 @@ local function compare(t1, t2)
             assert(type(v2) == "table", "Not a table")
             compare(v1, v2)
         elseif v1 ~= v2 then
-            printf("Error: values not equal: (%s, %s)\n", v1, v2)
-            os.exit(1)
+            local s = ("(%s, %s)"):format(v1, v2)
+            stderr:write("Error: values not equal: ", s, "\n")
+            exit(1)
         elseif verbose then
-            printf("OK:  %-15s %s\n", v1, v2)
+            stderr:write(("OK:  %-15s %s\n"):format(v1, v2))
         end
     end
     return true
 end
 
-local filename = assert(arg[1], "arg[1] is nil; expected filename")
-local file = assert(io.open(filename))
+local file = assert(open(filename))
 local text = assert(file:read("*a"))
 
 local t1 = assert(ltcn.parse(text, filename))
