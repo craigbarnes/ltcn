@@ -13,7 +13,7 @@ local function compare(t1, t2)
             compare(v1, v2)
         elseif v1 ~= v2 then
             local s = ("(%s, %s)"):format(v1, v2)
-            stderr:write("Error: values not equal: ", s, "\n")
+            stderr:write(filename, ": Error: values not equal: ", s, "\n")
             exit(1)
         elseif verbose then
             stderr:write(("OK:  %-15s %s\n"):format(v1, v2))

@@ -1,14 +1,6 @@
 Issues
 ======
 
-Don't accept newlines inside short strings
-------------------------------------------
-
-As per the title. The parser currently accepts newlines inside short
-strings, whereas Lua reports an "unfinished string" error. This should
-be fixed to follow the same behaviour as Lua -- preferably with the same
-error message.
-
 Allow nil values
 ----------------
 

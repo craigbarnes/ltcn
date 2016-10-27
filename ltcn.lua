@@ -6,7 +6,17 @@ local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local _ENV = nil
 local digit = R"09"
 
-local charmap = {
+local escape_map = {
+    ["\a"] = "\\a",
+    ["\b"] = "\\b",
+    ["\f"] = "\\f",
+    ["\n"] = "\\n",
+    ["\r"] = "\\r",
+    ["\t"] = "\\t",
+    ["\v"] = "\\v",
+}
+
+local unescape_map = {
     ["\\a"] = "\a",
     ["\\b"] = "\b",
     ["\\f"] = "\f",
@@ -20,6 +30,14 @@ local charmap = {
     ['\\"'] = '"',
     ["\\\\"] = "\\"
 }
+
+local function escape(s)
+    return (s:gsub("[\a\b\f\n\r\t\v]", escape_map))
+end
+
+local function unescape(s)
+    return (s:gsub("\\[abfnrtv'\n\r\"\\]", unescape_map))
+end
 
 local function lineno(str, i)
     if i == 1 then
@@ -44,12 +62,12 @@ local function report_error()
     return geterrorinfo() / function(e)
         local filename = e.filename or ""
         local line, col = lineno(e.subject, e.ffp or 1)
+        local unexpected = escape(e.unexpected)
         local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
-        return nil, s:format(filename, line, col, e.unexpected, e.expected)
+        return nil, s:format(filename, line, col, unexpected, e.expected)
     end
 end
 
--- Sets the farthest failure position and the expected tokens
 local function setffp(s, i, t, n)
     if not t.ffp or i > t.ffp then
         t.ffp = i
@@ -79,10 +97,6 @@ end
 
 local function symb(str)
     return token(P(str), str)
-end
-
-local function unescape(s)
-    return (s:gsub("\\[abfnrtv'\n\r\"\\]", charmap))
 end
 
 local function setfield(t, v1, v2)
@@ -145,8 +159,8 @@ local grammar = {
     False = P"false" * -V"NameChar" * Cc(false);
     Boolean = V"True" + V"False";
 
-    SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - P"'"))^0) * P"'";
-    DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - P'"'))^0) * P'"';
+    SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - S"'\r\n"))^0) * symb"'";
+    DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - S'"\r\n'))^0) * symb'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
     String = V"LongString" + (V"ShortString" / unescape);
 

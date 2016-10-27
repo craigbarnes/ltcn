@@ -18,3 +18,21 @@ do
     assert(t == nil)
     assert(e == ":1:4: Syntax error: unexpected '{', expecting 'Boolean', 'String', 'Number'")
 end
+
+do
+    local t, e = parse "{a = true, locals = true, do = false}"
+    assert(t == nil)
+    assert(e == ":1:27: Syntax error: unexpected 'do', expecting '}', '{', 'Boolean', 'String', 'Number', 'Name', '['")
+end
+
+do
+    local t, e = parse "{key = 'Hello\nWorld!'}"
+    assert(t == nil)
+    assert(e == ":2:0: Syntax error: unexpected '\\n', expecting '''")
+end
+
+do
+    local t, e = parse "{key = 'Hello\rWorld!'}"
+    assert(t == nil)
+    assert(e == ":1:14: Syntax error: unexpected '\\r', expecting '''")
+end
