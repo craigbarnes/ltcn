@@ -1,0 +1,4 @@
+tests:
+    image: craigbarnes/lua-testing
+    script:
+        - make check
