@@ -47,19 +47,16 @@ local function lineno(str, i)
     return n + 1, #rest
 end
 
-local function getffp(s, i, t)
-    return t.ffp or i, t
-end
-
-local function geterrorinfo()
-    return Cmt(Carg(1), getffp) * (C(V"OneWord") + Cc("EOF")) / function(t, u)
-        t.unexpected = u
-        return t
-    end
+local function getffp(subject, position, errorinfo)
+    return errorinfo.ffp or position, errorinfo
 end
 
 local function report_error()
-    return geterrorinfo() / function(e)
+    local errorinfo = Cmt(Carg(1), getffp) * V"OneWord" / function(e, u)
+        e.unexpected = u
+        return e
+    end
+    return errorinfo / function(e)
         local filename = e.filename or ""
         local line, col = lineno(e.subject, e.ffp or 1)
         local unexpected = escape(e.unexpected)
@@ -87,16 +84,12 @@ local function updateffp(name)
     return Cmt(Carg(1) * Cc(name), setffp)
 end
 
-local function token(pat, name)
-    return pat * V"Skip" + updateffp(name) * P(false)
-end
-
 local function T(name)
-    return token(V(name), name)
+    return V(name) * V"Skip" + updateffp(name) * P(false)
 end
 
 local function symb(str)
-    return token(P(str), str)
+    return P(str) * V"Skip" + updateffp(str) * P(false)
 end
 
 local function setfield(t, v1, v2)
@@ -133,8 +126,7 @@ local grammar = {
     LineComment = P"--" * (P(1) - P"\n")^0;
     Comment = V"LongComment" + V"LineComment";
 
-    Space = S" \f\n\r\t\v"^1;
-    Skip = (V"Space" + V"Comment")^0;
+    Skip = (S" \f\n\r\t\v" + V"Comment")^0;
     Return = V"Skip" * (P"return" * -V"NameChar")^-1 * V"Skip";
     EOF = P(-1);
 
@@ -164,7 +156,7 @@ local grammar = {
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
     String = V"LongString" + (V"ShortString" / unescape);
 
-    OneWord = V"Name" + V"Number" + V"String" + V"Reserved" + P(1);
+    OneWord = C(V"Name" + V"Number" + V"String" + V"Reserved" + P(1) + Cc"EOF");
 }
 
 local function parse(subject, filename)
