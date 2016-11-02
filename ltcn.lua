@@ -78,13 +78,12 @@ local function report_error()
 end
 
 local function setffp(subject, position, errorinfo, token_name)
-    if not errorinfo.ffp or position > errorinfo.ffp then
+    local ffp = errorinfo.ffp
+    if not ffp or position > ffp then
         errorinfo.ffp = position
         errorinfo.expected = {[token_name] = true}
-    elseif position == errorinfo.ffp then
-        if not errorinfo.expected[token_name] then
-            errorinfo.expected[token_name] = true
-        end
+    elseif position == ffp then
+        errorinfo.expected[token_name] = true
     end
     return false
 end
