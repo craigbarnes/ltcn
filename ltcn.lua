@@ -3,6 +3,7 @@ local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
 local tonumber, type, iotype, open = tonumber, type, io.type, io.open
+local concat, sort, pairs = table.concat, table.sort, pairs
 local _ENV = nil
 local digit = R"09"
 
@@ -51,6 +52,16 @@ local function getffp(subject, position, errorinfo)
     return errorinfo.ffp or position, errorinfo
 end
 
+local function tokenset_to_list(set)
+    local list, i = {}, 0
+    for member in pairs(set) do
+        i = i + 1
+        list[i] = "'" .. member .. "'"
+    end
+    sort(list)
+    return list
+end
+
 local function report_error()
     local errorinfo = Cmt(Carg(1), getffp) * V"OneWord" / function(e, u)
         e.unexpected = u
@@ -60,21 +71,19 @@ local function report_error()
         local filename = e.filename or ""
         local line, col = lineno(e.subject, e.ffp or 1)
         local unexpected = escape(e.unexpected)
+        local expected = concat(tokenset_to_list(e.expected), ", ")
         local s = "%s:%d:%d: Syntax error: unexpected '%s', expecting %s"
-        return nil, s:format(filename, line, col, unexpected, e.expected)
+        return nil, s:format(filename, line, col, unexpected, expected)
     end
 end
 
-local function setffp(s, i, t, n)
-    if not t.ffp or i > t.ffp then
-        t.ffp = i
-        t.list = {}
-        t.list[n] = n
-        t.expected = "'" .. n .. "'"
-    elseif i == t.ffp then
-        if not t.list[n] then
-            t.list[n] = n
-            t.expected = "'" .. n .. "', " .. t.expected
+local function setffp(subject, position, errorinfo, token_name)
+    if not errorinfo.ffp or position > errorinfo.ffp then
+        errorinfo.ffp = position
+        errorinfo.expected = {[token_name] = true}
+    elseif position == errorinfo.ffp then
+        if not errorinfo.expected[token_name] then
+            errorinfo.expected[token_name] = true
         end
     end
     return false

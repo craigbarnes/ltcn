@@ -16,13 +16,13 @@ end
 do
     local t, e = parse "{ [{'x', 'y', 'z'}] = 'xyz' }"
     assert(t == nil)
-    assert(e == ":1:4: Syntax error: unexpected '{', expecting 'Boolean', 'String', 'Number'")
+    assert(e == ":1:4: Syntax error: unexpected '{', expecting 'Boolean', 'Number', 'String'")
 end
 
 do
     local t, e = parse "{a = true, locals = true, do = false}"
     assert(t == nil)
-    assert(e == ":1:27: Syntax error: unexpected 'do', expecting '}', '{', 'Boolean', 'String', 'Number', 'Name', '['")
+    assert(e == ":1:27: Syntax error: unexpected 'do', expecting 'Boolean', 'Name', 'Number', 'String', '[', '{', '}'")
 end
 
 do
@@ -46,5 +46,5 @@ end
 do
     local t, e = parse " \n --[=[ --]]\n --]=] {   \n\n"
     assert(t == nil)
-    assert(e == ":5:0: Syntax error: unexpected 'EOF', expecting '}', '{', 'Boolean', 'String', 'Number', 'Name', '['")
+    assert(e == ":5:0: Syntax error: unexpected 'EOF', expecting 'Boolean', 'Name', 'Number', 'String', '[', '{', '}'")
 end
