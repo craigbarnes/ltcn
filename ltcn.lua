@@ -156,7 +156,7 @@ local grammar = {
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
     String = V"LongString" + (V"ShortString" / unescape);
 
-    OneWord = C(V"Name" + V"Number" + V"String" + V"Reserved" + P(1) + Cc"EOF");
+    OneWord = C(V"Name" + V"Number" + V"String" + V"Reserved" + P(1)) + Cc"EOF";
 }
 
 local function parse(subject, filename)

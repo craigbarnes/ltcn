@@ -36,3 +36,15 @@ do
     assert(t == nil)
     assert(e == ":1:14: Syntax error: unexpected '\\r', expecting '''")
 end
+
+do
+    local t, e = parse ""
+    assert(t == nil)
+    assert(e == ":1:1: Syntax error: unexpected 'EOF', expecting '{'")
+end
+
+do
+    local t, e = parse " \n --[=[ --]]\n --]=] {   \n\n"
+    assert(t == nil)
+    assert(e == ":5:0: Syntax error: unexpected 'EOF', expecting '}', '{', 'Boolean', 'String', 'Number', 'Name', '['")
+end
