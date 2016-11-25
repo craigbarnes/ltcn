@@ -48,3 +48,29 @@ do
     assert(t == nil)
     assert(e == ":5:0: Syntax error: unexpected 'EOF', expecting 'Boolean', 'Name', 'Number', 'String', '[', '{', '}'")
 end
+
+do
+    -- Either side of a float can be omitted, but never both
+    local t, e = parse "{x = .}"
+    assert(t == nil)
+    assert(e == ":1:6: Syntax error: unexpected '.', expecting 'Boolean', 'Number', 'String', '{'")
+end
+
+do
+    local t, e = parse "{x = .e+2}"
+    assert(t == nil)
+    assert(e == ":1:6: Syntax error: unexpected '.', expecting 'Boolean', 'Number', 'String', '{'")
+end
+
+do
+    -- Decimal numbers can't have hexadecimal fractional part
+    local t, e = parse "{x = 918273645.f}"
+    assert(t == nil)
+    assert(e == ":1:16: Syntax error: unexpected 'f', expecting ',', ';', '}'")
+end
+
+do
+    local t, e = parse "{x = 009520000.000.222}"
+    assert(t == nil)
+    assert(e == ":1:19: Syntax error: unexpected '.222', expecting ',', ';', '}'")
+end

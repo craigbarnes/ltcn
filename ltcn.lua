@@ -150,9 +150,13 @@ local grammar = {
     HexInt = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
     DecInt = R"09"^1;
     Int = V"HexInt" + V"DecInt";
+
     DecExpo = S"eE" * S"+-"^-1 * R"09"^1;
-    Float = (((R"09"^1 * P"." * R"09"^0) + (P"." * R"09"^1)) * V"DecExpo"^-1) +
-            (R"09"^1 * V"DecExpo");
+    DecFloat = (P"." * R"09"^1 * V"DecExpo"^-1) +
+               (V"DecInt" * P"." * R"09"^0 * V"DecExpo"^-1) +
+               (V"DecInt" * V"DecExpo");
+    Float = V"DecFloat";
+
     Number = C(P"-"^-1 * (V"Float" + V"Int")) / tonumber;
 
     True = P"true" * -V"NameChar" * Cc(true);
