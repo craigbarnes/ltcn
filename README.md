@@ -12,7 +12,7 @@ Features
 
 * Parses any Lua table constructor that consists of string, number or
   boolean *keys* and string, number, boolean or table *values*.
-* Handles escape sequences in string literals.
+* Handles unescaping of escape sequences in string literals.
 * Discards single-line comments and long comments.
 * Permits a single `return` keyword before the outermost opening brace,
   to enable drop-in replacement of the [`load`] function.
