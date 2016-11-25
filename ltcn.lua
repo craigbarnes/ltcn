@@ -5,7 +5,6 @@ local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
 local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local concat, sort, pairs = table.concat, table.sort, pairs
 local _ENV = nil
-local digit = R"09"
 
 local escape_map = {
     ["\a"] = "\\a",
@@ -148,12 +147,13 @@ local grammar = {
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
 
-    Hex = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
-    Expo = S"eE" * S"+-"^-1 * digit^1;
-    Float = (((digit^1 * P"." * digit^0) + (P"." * digit^1)) * V"Expo"^-1) +
-            (digit^1 * V"Expo");
-    Int = digit^1;
-    Number = C(P"-"^-1 * (V"Hex" + V"Float" + V"Int")) / tonumber;
+    HexInt = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
+    DecInt = R"09"^1;
+    Int = V"HexInt" + V"DecInt";
+    DecExpo = S"eE" * S"+-"^-1 * R"09"^1;
+    Float = (((R"09"^1 * P"." * R"09"^0) + (P"." * R"09"^1)) * V"DecExpo"^-1) +
+            (R"09"^1 * V"DecExpo");
+    Number = C(P"-"^-1 * (V"Float" + V"Int")) / tonumber;
 
     True = P"true" * -V"NameChar" * Cc(true);
     False = P"false" * -V"NameChar" * Cc(false);
