@@ -1,6 +1,7 @@
 local ltcn = require "ltcn"
-local type, pairs, load, assert = type, pairs, load, assert
+local type, pairs, assert = type, pairs, assert
 local open, stderr, exit = io.open, io.stderr, os.exit
+local load = loadstring or load
 local verbose = os.getenv "VERBOSE"
 local filename = assert(arg[1], "arg[1] is nil; expected filename")
 local _ENV = nil
