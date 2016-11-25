@@ -8,8 +8,8 @@ description = {
 }
 
 source = {
-    url = "git://github.com/craigbarnes/ltcn.git",
-    tag = "%VERSION%"
+    url = "%URL%",
+    %SRCX%
 }
 
 dependencies = {
