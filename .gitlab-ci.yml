@@ -1,4 +1,4 @@
 tests:
     image: quay.io/craigbarnes/lua-testing
     script:
-        - make check
+        - make check-all
