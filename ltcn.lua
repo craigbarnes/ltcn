@@ -147,16 +147,21 @@ local grammar = {
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
 
-    HexInt = P"0" * S"xX" * (R"af" + R"AF" + R"09")^1;
+    HexDigit = R"af" + R"AF" + R"09";
+    HexInt = P"0" * S"xX" * V"HexDigit"^1;
     DecInt = R"09"^1;
-    Int = V"HexInt" + V"DecInt";
 
     DecExpo = S"eE" * S"+-"^-1 * R"09"^1;
     DecFloat = (P"." * R"09"^1 * V"DecExpo"^-1) +
                (V"DecInt" * P"." * R"09"^0 * V"DecExpo"^-1) +
                (V"DecInt" * V"DecExpo");
-    Float = V"DecFloat";
 
+    HexExpo = S"pP" * S"+-"^-1 * R"09"^1;
+    HexFloat = (V"HexInt" * P"." * V"HexDigit"^0 * V"HexExpo"^-1) +
+               (V"HexInt" * V"HexExpo");
+
+    Int = V"HexInt" + V"DecInt";
+    Float = V"DecFloat";
     Number = C(P"-"^-1 * (V"Float" + V"Int")) / tonumber;
 
     True = P"true" * -V"NameChar" * Cc(true);
