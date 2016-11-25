@@ -1,41 +1,53 @@
 LTCN
 ====
 
-LTCN or "Lua Table Constructor Notation" aims to be to Lua, as JSON is
-to JavaScript, with the exception of also supporting comments and
-unquoted keys.
+LTCN or "Lua Table Constructor Notation" is a Lua library for parsing
+and deserializing Lua table syntax via an [LPeg] grammar. It's intended
+to parse a safe subset of the Lua language and to replace many common
+use cases of the [`load`] function for reading data and configuration
+files.
 
-Goals and features:
+Features
+--------
 
-* Support parsing any valid Lua table constructor that consists of string,
-  number or boolean *keys* and string, number, boolean or table *values*.
-* Allow comments and whitespace in the same positions as Lua does.
-* In the absence of errors, produce the same table structure as Lua's [`load`]
-  function (in text mode), given the same input.
-* Ignore a single `return` keyword before the outermost opening brace, as a
-  convenience for the above.
-* Provide the same security advantages as `JSON.parse` does, as compared to
-  `eval`, for parsing input from untrusted sources or networks.
-
-Non-goals:
-
-* Allowing tables as keys. This was supported at one point, but every
-  use case I could think of would have required additional features
-  (that clash with other goals) in order to be useful.
-* Support for structures that require more than simple table constructors
-  to initialize (e.g. those with self references, shared references etc.).
-* Expression evaluation. Constant expressions can be normalized to simple
-  values. Non-constant expressions are beyond the scope of LTCN.
-* Support for metatables, functions, conditionals etc. This format is known
-  as "Lua" and is already handled well by the [`load`] function
-  (although this obviously requires much greater caution if handling
-  untrusted input).
+* Parses any Lua table constructor that consists of string, number or
+  boolean *keys* and string, number, boolean or table *values*.
+* Handles escape sequences in string literals.
+* Discards single-line comments and long comments.
+* Permits a single `return` keyword before the outermost opening brace,
+  to enable drop-in replacement of the [`load`] function.
+* Provides useful error messages for syntax errors, including line and
+  column numbers.
 
 Requirements
 ------------
 
 * [Lua] >= 5.1 or [LuaJIT] >= 2.0
 * [LPeg] >= 0.12
+
+Not Implemented
+---------------
+
+### Lua 5.2+ features
+
+The following are features that were added to Lua after version 5.1 and
+are deliberately not supported to simplify cross-version compatibility:
+
+* Hexadecimal floating point literals (e.g. `0x1.5p-3`).
+* Hexadecimal escape sequences in strings (e.g. `"\xFF"`)
+* Unicode escape sequences in strings (e.g. `"\u{1F311}"`)
+
+### Beyond the scope of LTCN
+
+The following are syntactical constructs of Lua that could theoretically
+be supported, but are considered beyond the scope of the project:
+
+* Tables as keys (not useful without considerable extra functionality).
+* Tables that require more than a simple constructor to initialize
+  (e.g. those with self references, shared references etc.).
+* Expression evaluation.
+* Metatables, functions, conditionals, etc. (just use the Lua
+  [`load`] function for this).
 
 [License]
 ---------
