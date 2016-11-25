@@ -25,8 +25,16 @@ Requirements
 * [Lua] >= 5.1 or [LuaJIT] >= 2.0
 * [LPeg] >= 0.12
 
-Not Implemented
----------------
+Installation
+------------
+
+There's no versioned release yet, but for now the SCM [rock] can be
+installed with:
+
+    luarocks --server=http://luarocks.org/dev install ltcn
+
+Features Not Implemented
+------------------------
 
 ### Lua 5.2+ features
 
@@ -72,3 +80,4 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 [Lua]: http://www.lua.org/
 [LuaJIT]: http://luajit.org/
 [LPeg]: http://www.inf.puc-rio.br/~roberto/lpeg/
+[rock]: https://luarocks.org/modules/craigb/ltcn
