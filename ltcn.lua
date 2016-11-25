@@ -4,6 +4,7 @@ local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
 local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local concat, sort, pairs = table.concat, table.sort, pairs
+local error = error
 local _ENV = nil
 
 local escape_map = {
@@ -177,6 +178,11 @@ local grammar = {
 }
 
 local function parse(subject, filename)
+    if type(subject) ~= "string" then
+        error("bad argument #1: string expected, got " .. type(subject), 2)
+    elseif filename ~= nil and type(filename) ~= "string" then
+        error("bad argument #2: string expected, got " .. type(filename), 2)
+    end
     local errorinfo = {subject = subject, filename = filename}
     lpeg.setmaxstack(1000)
     return lpeg.match(grammar, subject, 1, errorinfo)
@@ -184,7 +190,8 @@ end
 
 local function parse_file(file_or_filename)
     local file, filename, openerr
-    if type(file_or_filename) == "string" then
+    local argtype = type(file_or_filename)
+    if argtype == "string" then
         filename = file_or_filename
         file, openerr = open(filename)
         if not file then
@@ -193,7 +200,7 @@ local function parse_file(file_or_filename)
     elseif iotype(file_or_filename) == "file" then
         file = file_or_filename
     else
-        return nil, "Invalid argument #1: not a file handle or filename string"
+        error("bad argument #1: string expected, got " .. argtype, 2)
     end
     local text, readerr = file:read("*a")
     file:close()

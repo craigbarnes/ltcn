@@ -74,3 +74,15 @@ do
     assert(t == nil)
     assert(e == ":1:19: Syntax error: unexpected '.222', expecting ',', ';', '}'")
 end
+
+do
+    local t, e = pcall(parse, {})
+    assert(t == false)
+    assert(e == "bad argument #1: string expected, got table")
+end
+
+do
+    local t, e = pcall(parse, "", true)
+    assert(t == false)
+    assert(e == "bad argument #2: string expected, got boolean")
+end
