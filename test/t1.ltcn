@@ -4,4 +4,8 @@
     ["\a\b\n\\'\""] = '"\n\t\r\\\r\n',
     [0xff] = 0Xff, locals = 0x55, falsey = .5,
     --[=[ foo=xyz ]] ]==]  ]=] etc = 100, bla = [==[ ]=] ]==],
+
+    foo = {bar = {lol = {baz = {qux = {x = 1337}}}}},
+    etc = {{{{['"""[]][]'] = false}}}},
+    a = {b = {c = {d = {e = {{{1, 2, 3, true}}}}}}}
 }
