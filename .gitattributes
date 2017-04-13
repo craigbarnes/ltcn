@@ -1,0 +1,13 @@
+[attr]code text whitespace=tab-in-indent,trailing-space,tabwidth=4
+[attr]makefile text whitespace=trailing-space
+
+*.lua code
+*.md code
+*.yml code
+rockspec.in code
+.luacheckrc code
+Makefile makefile
+
+.distinfo export-subst
+.git* export-ignore
+.editorconfig export-ignore
