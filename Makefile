@@ -9,10 +9,10 @@ check:
 	@echo OK
 
 check-all:
-	make -s check LUA=lua5.3
-	make -s check LUA=lua5.2
-	make -s check LUA=lua5.1
-	make -s check LUA=luajit
+	$(MAKE) -s check LUA=lua5.3
+	$(MAKE) -s check LUA=lua5.2
+	$(MAKE) -s check LUA=lua5.1
+	$(MAKE) -s check LUA=luajit
 
 check-luarocks-build check-luarocks-make: \
 check-luarocks-%: | ltcn-scm-1.rockspec
