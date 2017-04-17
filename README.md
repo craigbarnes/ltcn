@@ -43,6 +43,7 @@ are deliberately not supported to simplify cross-version compatibility:
 
 * Hexadecimal floating point literals (e.g. `0x1.5p-3`).
 * Hexadecimal escape sequences in strings (e.g. `"\xFF"`)
+* Whitespace escape sequences in strings (e.g. `"\z"`)
 * Unicode escape sequences in strings (e.g. `"\u{1F311}"`)
 
 ### Beyond the scope of LTCN

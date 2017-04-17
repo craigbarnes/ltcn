@@ -168,11 +168,11 @@ local grammar = {
 
     Escape = P"\\" / "" * (
         S"abfnrtv'\n\r\"\\" / unescape_map
-        + P"z" * V"Space"^0 / ""
         + R"09" * R"09"^-2 / tonumber / char
+        + updateffp"valid escape sequence"
     );
-    SingleQuotedString = P"'" * Cs((V"Escape" + (P(1) - S"'\r\n"))^0) * symb"'";
-    DoubleQuotedString = P'"' * Cs((V"Escape" + (P(1) - S'"\r\n'))^0) * symb'"';
+    SingleQuotedString = P"'" * Cs((V"Escape" + (P(1) - S"'\r\n\\"))^0) * symb"'";
+    DoubleQuotedString = P'"' * Cs((V"Escape" + (P(1) - S'"\r\n\\'))^0) * symb'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
     String = V"LongString" + V"ShortString";
 

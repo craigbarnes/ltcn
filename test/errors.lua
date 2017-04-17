@@ -31,6 +31,9 @@ assertError("{x = .}", 1, 6)
 assertError("{x = .e+2}", 1, 6)
 assertError("{x = 918273645.f}", 1, 16)
 assertError("{x = 009520000.000.222}", 1, 19)
+assertError('{x = "\\j"}', 1, 8)
+assertError('{x = "\\"}', 1, 9)
+assertError('{x = "\\z\n  x"}', 1, 8) -- Lua 5.2 \z escape not accepted by LTCN
 -- TODO: assertError('{xyz = "\256"}', 1, 9)
 
 assertArgError({})
