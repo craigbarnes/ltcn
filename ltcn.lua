@@ -4,7 +4,7 @@ local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
 local Cf, Cg, Cmt, Cs, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Cs, lpeg.Ct
 local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local concat, sort, pairs = table.concat, table.sort, pairs
-local error = error
+local char, error = string.char, error
 local _ENV = nil
 
 local escape_map = {
@@ -169,6 +169,7 @@ local grammar = {
     Escape = P"\\" / "" * (
         S"abfnrtv'\n\r\"\\" / unescape_map
         + P"z" * V"Space"^0 / ""
+        + R"09" * R"09"^-2 / tonumber / char
     );
     SingleQuotedString = P"'" * Cs((V"Escape" + (P(1) - S"'\r\n"))^0) * symb"'";
     DoubleQuotedString = P'"' * Cs((V"Escape" + (P(1) - S'"\r\n'))^0) * symb'"';

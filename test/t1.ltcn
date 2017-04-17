@@ -1,6 +1,7 @@
 {
     1, -2, 3, -0xff, -0, true, false, 'hi', "hello",
     {'a','b','c'}, field1 = 55, ["field2"] = 44.0e-3, --[false] = false,
+    decesc1 = "\33,\0339\0\255", decesc2 = '\0\00\000\1\2\3\9\09\009\0,\5.',
     ["\a\b\n\\'\""] = '"\n\t\r\\\r\n',
     [0xff] = 0Xff, locals = 0x55, falsey = .5,
     --[=[ foo=xyz ]] ]==]  ]=] etc = 100, bla = [==[ ]=] ]==],
