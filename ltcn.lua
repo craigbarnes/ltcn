@@ -1,7 +1,7 @@
 local lpeg = require "lpeg"
 local P, S, R, V = lpeg.P, lpeg.S, lpeg.R, lpeg.V
 local C, Carg, Cb, Cc = lpeg.C, lpeg.Carg, lpeg.Cb, lpeg.Cc
-local Cf, Cg, Cmt, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Ct
+local Cf, Cg, Cmt, Cs, Ct = lpeg.Cf, lpeg.Cg, lpeg.Cmt, lpeg.Cs, lpeg.Ct
 local tonumber, type, iotype, open = tonumber, type, io.type, io.open
 local concat, sort, pairs = table.concat, table.sort, pairs
 local error = error
@@ -18,26 +18,22 @@ local escape_map = {
 }
 
 local unescape_map = {
-    ["\\a"] = "\a",
-    ["\\b"] = "\b",
-    ["\\f"] = "\f",
-    ["\\n"] = "\n",
-    ["\\r"] = "\r",
-    ["\\t"] = "\t",
-    ["\\v"] = "\v",
-    ["\\\n"] = "\n",
-    ["\\\r"] = "\n",
-    ["\\'"] = "'",
-    ['\\"'] = '"',
-    ["\\\\"] = "\\"
+    ["a"] = "\a",
+    ["b"] = "\b",
+    ["f"] = "\f",
+    ["n"] = "\n",
+    ["r"] = "\r",
+    ["t"] = "\t",
+    ["v"] = "\v",
+    ["\n"] = "\n",
+    ["\r"] = "\n",
+    ["'"] = "'",
+    ['"'] = '"',
+    ["\\"] = "\\"
 }
 
 local function escape(s)
     return (s:gsub("[\a\b\f\n\r\t\v]", escape_map))
-end
-
-local function unescape(s)
-    return (s:gsub("\\[abfnrtv'\n\r\"\\]", unescape_map))
 end
 
 local function lineno(str, i)
@@ -134,7 +130,8 @@ local grammar = {
     LineComment = P"--" * (P(1) - P"\n")^0;
     Comment = V"LongComment" + V"LineComment";
 
-    Skip = (S" \f\n\r\t\v" + V"Comment")^0;
+    Space = S" \f\n\r\t\v";
+    Skip = (V"Space" + V"Comment")^0;
     Return = V"Skip" * (P"return" * -V"NameChar")^-1 * V"Skip";
     EOF = P(-1);
 
@@ -169,10 +166,14 @@ local grammar = {
     False = P"false" * -V"NameChar" * Cc(false);
     Boolean = V"True" + V"False";
 
-    SingleQuotedString = P"'" * C(((P"\\" * P(1)) + (P(1) - S"'\r\n"))^0) * symb"'";
-    DoubleQuotedString = P'"' * C(((P'\\' * P(1)) + (P(1) - S'"\r\n'))^0) * symb'"';
+    Escape = P"\\" / "" * (
+        S"abfnrtv'\n\r\"\\" / unescape_map
+        + P"z" * V"Space"^0 / ""
+    );
+    SingleQuotedString = P"'" * Cs((V"Escape" + (P(1) - S"'\r\n"))^0) * symb"'";
+    DoubleQuotedString = P'"' * Cs((V"Escape" + (P(1) - S'"\r\n'))^0) * symb'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
-    String = V"LongString" + (V"ShortString" / unescape);
+    String = V"LongString" + V"ShortString";
 
     OneWord = C(V"Name" + V"Number" + V"String" + V"Reserved" + P(1)) + Cc"EOF";
 }
