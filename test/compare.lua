@@ -1,3 +1,7 @@
+-- This script checks that the table returned by ltcn.parse() is
+-- identical to the table returned by the Lua load() function when
+-- both are given the same valid input.
+
 local ltcn = require "ltcn"
 local type, pairs, assert = type, pairs, assert
 local open, stderr, exit = io.open, io.stderr, os.exit
@@ -6,6 +10,7 @@ local load = loadstring or load
 local verbose = os.getenv "VERBOSE"
 local filename = assert(arg[1], "arg[1] is nil; expected filename")
 local _ENV = nil
+
 local Stack = {}
 Stack.__index = Stack
 
@@ -68,7 +73,7 @@ local file = assert(open(filename))
 local text = assert(file:read("*a"))
 
 local t1 = assert(ltcn.parse(text, filename))
-local fn = assert(load("return" .. text, "="..filename, "t"))
+local fn = assert(load("return" .. text, "=" .. filename, "t"))
 local t2 = assert(fn())
 
 compare(t1, t2)
