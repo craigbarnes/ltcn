@@ -37,6 +37,9 @@ assertError('{x = "\\"}', 1, 9)
 
 -- Unsupported Lua 5.2+ features
 assertError('{x = 0x1.5p-3}', 1, 9)
+assertError('{x = 0x0.1E}', 1, 9)
+assertError('{x = 0xA23p-4}', 1, 11)
+assertError('{x = 0X1.921FB54442D18P+1}', 1, 9)
 assertError('{x = "\\xFF"}', 1, 8)
 assertError('{x = "\\z\n  x"}', 1, 8)
 assertError('{x = "\\u{1F311}"}', 1, 8)
