@@ -140,12 +140,12 @@ local grammar = {
                "local" + "nil" + "not" + "or" + "repeat" + "return" +
                "then" + "true" + "until" + "while";
 
-    NameStart = R"az" + R"AZ" + P"_";
+    NameStart = R("az", "AZ") + P"_";
     NameChar = V"NameStart" + R"09";
     Reserved = V"Keywords" * -V"NameChar";
     Name = -V"Reserved" * C(V"NameStart" * V"NameChar"^0) * -V"NameChar";
 
-    HexDigit = R"af" + R"AF" + R"09";
+    HexDigit = R("af", "AF", "09");
     HexInt = P"0" * S"xX" * V"HexDigit"^1;
     DecInt = R"09"^1;
 
