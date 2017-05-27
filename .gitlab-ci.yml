@@ -1,4 +1,4 @@
 tests:
-    image: quay.io/craigbarnes/lua-testing
+    image: registry.gitlab.com/craigbarnes/dockerfiles/lua-testing
     script:
         - make check-all
