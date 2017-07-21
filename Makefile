@@ -4,6 +4,7 @@ RM  ?= rm -f
 
 check:
 	@$(LUA) test/compare.lua test/t1.ltcn
+	@$(LUA) test/compare.lua test/nesting.ltcn
 	@$(LUA) test/compare.lua test/numbers.ltcn
 	@$(LUA) test/errors.lua
 	@echo OK
