@@ -109,7 +109,7 @@ local function delim_match(subject, offset, c1, c2)
     return c1 == c2
 end
 
-local grammar = {
+local grammar = P {
     V"Return" * V"Table" * T"EOF" + report_error();
 
     Key = T"Number" + T"String" + T"Boolean";
@@ -187,7 +187,7 @@ local function parse(subject, filename)
     end
     local errorinfo = {subject = subject, filename = filename}
     lpeg.setmaxstack(1000)
-    return lpeg.match(grammar, subject, 1, errorinfo)
+    return grammar:match(subject, 1, errorinfo)
 end
 
 local function parse_file(file_or_filename)
