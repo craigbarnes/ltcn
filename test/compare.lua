@@ -59,8 +59,7 @@ local function compare(t1, t2)
                 seen[index] = true
             end
         elseif verbose then
-            local index = keys:tostring(k)
-            stderr:write(("OK:  %s\n"):format(index))
+            stderr:write(" OK: ", keys:tostring(k), "\n")
         end
     end
     return true
@@ -73,6 +72,10 @@ file:close()
 local t1 = assert(ltcn.parse(text, filename))
 local fn = assert(load("return" .. text, "=" .. filename, "t"))
 local t2 = assert(fn())
+
+if verbose then
+    stderr:write("\n", filename, "\n", ("-"):rep(#filename), "\n")
+end
 
 compare(t1, t2)
 compare(t2, t1)
