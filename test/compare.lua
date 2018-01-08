@@ -26,20 +26,17 @@ end
 
 function Stack:pop()
     local n = self.length
+    assert(n > 0)
     self[n] = nil
     self.length = n - 1
 end
 
 function Stack:tostring(k)
-    local n = self.length
-    if 0 >= n then
-        return ("[%q]"):format(k)
-    end
-    local buf = {}
+    local n, q, buf = self.length, "[%q]", {}
     for i = 1, n do
-        buf[i] = ("[%q]"):format(self[i])
+        buf[i] = q:format(self[i])
     end
-    buf[n+1] = ("[%q]"):format(k)
+    buf[n+1] = q:format(k)
     return concat(buf)
 end
 
@@ -71,6 +68,7 @@ end
 
 local file = assert(open(filename))
 local text = assert(file:read("*a"))
+file:close()
 
 local t1 = assert(ltcn.parse(text, filename))
 local fn = assert(load("return" .. text, "=" .. filename, "t"))
