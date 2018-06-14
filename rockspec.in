@@ -3,7 +3,7 @@ version = "%VERSION%-1"
 
 description = {
     summary = "Lua Table Constructor Notation",
-    homepage = "https://github.com/craigbarnes/ltcn",
+    homepage = "https://gitlab.com/craigbarnes/ltcn",
     license = "ISC"
 }
 
