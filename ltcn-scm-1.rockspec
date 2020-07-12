@@ -1,5 +1,5 @@
 package = "ltcn"
-version = "%VERSION%-1"
+version = "scm-1"
 
 description = {
     summary = "Lua Table Constructor Notation",
@@ -8,8 +8,8 @@ description = {
 }
 
 source = {
-    url = "%URL%",
-    %SRCX%
+    url = "git+https://gitlab.com/craigbarnes/ltcn.git",
+    branch = "master"
 }
 
 dependencies = {
