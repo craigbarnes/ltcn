@@ -14,7 +14,6 @@ check-all:
 	$(MAKE) check LUA=lua5.3
 	$(MAKE) check LUA=lua5.2
 	$(MAKE) check LUA=lua5.1
-	$(MAKE) check LUA=luajit
 
 check-luarocks: ltcn-scm-1.rockspec | build/
 	$(LUAROCKS) lint $<
