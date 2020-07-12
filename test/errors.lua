@@ -33,7 +33,11 @@ assertError("{x = 918273645.f}", 1, 16)
 assertError("{x = 009520000.000.222}", 1, 19)
 assertError('{x = "\\j"}', 1, 8)
 assertError('{x = "\\"}', 1, 9)
--- TODO: assertError('{xyz = "\256"}', 1, 9)
+assertError('{"\\256"}', 1, 4)
+assertError('{"\\290"}', 1, 4)
+assertError('{"\\301"}', 1, 4)
+assertError('{"\\900"}', 1, 4)
+assertError('{"\\999"}', 1, 4)
 
 -- Unsupported Lua 5.2+ features
 assertError('{x = 0x1.5p-3}', 1, 9)
