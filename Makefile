@@ -16,10 +16,16 @@ check-all:
 	$(MAKE) check LUA=lua5.1
 	$(MAKE) check LUA=luajit
 
-check-luarocks-build check-luarocks-make: check-luarocks-%:
-	$(LUAROCKS) --tree='$(CURDIR)/build/$@' $* ltcn-scm-1.rockspec
-	$(RM) -r build/$@/
+check-luarocks: ltcn-scm-1.rockspec | build/
+	$(LUAROCKS) lint $<
+	$(LUAROCKS) --tree='$(CURDIR)/build/scm-1-rock' make $<
+
+build/:
+	mkdir -p $@
+
+clean:
+	$(RM) -r build/
 
 
-.PHONY: check check-all check-luarocks-build check-luarocks-make
+.PHONY: check check-all check-luarocks clean
 .DELETE_ON_ERROR:

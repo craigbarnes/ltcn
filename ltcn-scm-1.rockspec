@@ -14,7 +14,7 @@ source = {
 
 dependencies = {
     "lua >= 5.1",
-    "lpeg >= 0.12" -- Possibly >= 0.10, but only tested with 0.12
+    "lpeg >= 0.12"
 }
 
 build = {

@@ -1,4 +1,4 @@
 tests:
     image: registry.gitlab.com/craigbarnes/dockerfiles/lua-testing
     script:
-        - make check-all
+        - make check-all check-luarocks
