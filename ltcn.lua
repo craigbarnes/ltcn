@@ -50,9 +50,13 @@ end
 
 local function tokenset_to_list(set)
     local list, i = {}, 0
-    for member in pairs(set) do
+    for s in pairs(set) do
         i = i + 1
-        list[i] = "'" .. member .. "'"
+        if s:match("^%p$") then
+            -- Quote punctuation characters
+            s = (s == "'") and '"\'"' or ("'" .. s .. "'")
+        end
+        list[i] = s
     end
     sort(list)
     return list
