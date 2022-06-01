@@ -11,6 +11,7 @@ check:
 
 check-all: MAKEFLAGS += --no-print-directory
 check-all:
+	$(MAKE) check LUA=lua5.4
 	$(MAKE) check LUA=lua5.3
 	$(MAKE) check LUA=lua5.2
 	$(MAKE) check LUA=lua5.1
