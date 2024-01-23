@@ -31,7 +31,7 @@ Installation
 There's no versioned release yet, but for now the SCM [rock] can be
 installed with:
 
-    luarocks --server=http://luarocks.org/dev install ltcn
+    luarocks --server=https://luarocks.org/dev install ltcn
 
 Features Not Implemented
 ------------------------
@@ -64,10 +64,10 @@ License
 ISC [License][] (SPDX: [`ISC`]).
 
 
-[`load`]: http://www.lua.org/manual/5.2/manual.html#pdf-load
-[Lua]: http://www.lua.org/
-[LuaJIT]: http://luajit.org/
-[LPeg]: http://www.inf.puc-rio.br/~roberto/lpeg/
+[`load`]: https://www.lua.org/manual/5.3/manual.html#pdf-load
+[Lua]: https://www.lua.org/
+[LuaJIT]: https://luajit.org/
+[LPeg]: https://www.inf.puc-rio.br/~roberto/lpeg/
 [rock]: https://luarocks.org/modules/craigb/ltcn
 [License]: LICENSE
 [`ISC`]: https://spdx.org/licenses/ISC.html
