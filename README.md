@@ -58,9 +58,16 @@ be supported, but are considered beyond the scope of the project:
 * Metatables, functions, conditionals, etc. (just use the Lua
   [`load`] function for this).
 
+License
+-------
+
+ISC [License][] (SPDX: [`ISC`]).
+
 
 [`load`]: http://www.lua.org/manual/5.2/manual.html#pdf-load
 [Lua]: http://www.lua.org/
 [LuaJIT]: http://luajit.org/
 [LPeg]: http://www.inf.puc-rio.br/~roberto/lpeg/
 [rock]: https://luarocks.org/modules/craigb/ltcn
+[License]: LICENSE
+[`ISC`]: https://spdx.org/licenses/ISC.html
