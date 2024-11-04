@@ -36,6 +36,10 @@ local function escape(s)
     return (s:gsub("[\a\b\f\n\r\t\v]", escape_map))
 end
 
+local function decimal_str_to_char(str)
+    return char(tonumber(str))
+end
+
 local function lineno(str, i)
     if i == 1 then
         return 1, 1
@@ -170,19 +174,15 @@ local grammar = P {
     False = P"false" * -V"NameChar" * Cc(false);
     Boolean = V"True" + V"False";
 
-    DecEscape = (
+    DecimalEscape = (
         R"09" * R"09"^-1 * -R"09" -- 1-2 digits, followed by a non-digit
         + R"01" * R"09" * R"09" -- 3 digits, 000-199
         + P"2" * R"04" * R"09" -- 3 digits, 200-249
         + P"25" * R"05" -- 3 digits, 250-255
-    );
+    ) / decimal_str_to_char;
 
-    Escape = P"\\" / "" * (
-        S"abfnrtv'\n\r\"\\" / unescape_map
-        + V"DecEscape" / tonumber / char
-        + updateffp"valid escape sequence"
-    );
-
+    CharEscape = S"abfnrtv'\n\r\"\\" / unescape_map;
+    Escape = P"\\" / "" * (T"CharEscape" + T"DecimalEscape");
     SingleQuotedString = P"'" * Cs((V"Escape" + (P(1) - S"'\r\n\\"))^0) * symb"'";
     DoubleQuotedString = P'"' * Cs((V"Escape" + (P(1) - S'"\r\n\\'))^0) * symb'"';
     ShortString = V"DoubleQuotedString" + V"SingleQuotedString";
