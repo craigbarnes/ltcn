@@ -54,7 +54,8 @@ end
 
 local function tokenset_to_list(set)
     local list, i = {}, 0
-    for s in pairs(set) do
+    for elem in pairs(set) do
+        local s = elem
         i = i + 1
         if s:match("^%p$") then
             -- Quote punctuation characters
